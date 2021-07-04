@@ -36,20 +36,27 @@ def get_content(html_page):
 
     for rate_findings in rates_findings:
         exchanger_params = rate_findings.find("td", class_="bj")
-        exchange_values = rate_findings.find_all("td", class_="bi")
-        if not (exchanger_params and exchange_values):
+        if not exchanger_params:
             continue
+        exchange_values = rate_findings.find_all("td", class_="bi")
         exchanger_name = exchanger_params.find("div", class_="ca").text
         rates_required_data[exchanger_name] = {
             "pay": exchange_values[0].find("div", class_="fs").text,
             "get": exchange_values[1].text,
+            "reserve": rate_findings.find("td", class_="ar arp").text,
             "manual": has_param(exchanger_params.find(class_="manual")),
-            "overout": has_param(exchanger_params.find(class_="overout")),
+            "otherout": has_param(exchanger_params.find(class_="otherout")),
+            "otherin": has_param(exchanger_params.find(class_="otherin")),
             "floating": has_param(exchanger_params.find(class_="floating")),
-            "selfverify": has_param(exchanger_params.find(class_="verifying")),
+            "verifying": has_param(exchanger_params.find(class_="verifying")),
             "percent": has_param(exchanger_params.find(class_="percent")),
             "cardverify": has_param(exchanger_params.find(class_="cardverify")),
-            "registration": has_param(exchanger_params.find(class_="reg"))
+            "reg": has_param(exchanger_params.find(class_="reg")),
+            "card2card": has_param(exchanger_params.find(class_="card2card")),
+            "airplane": has_param(exchanger_params.find(class_="airplane")),
+            "purse": has_param(exchanger_params.find(class_="purse")),
+            "official": has_param(exchanger_params.find(class_="official")),
+            "delay": has_param(exchanger_params.find(class_="delay")),
         }
 
     return rates_required_data
