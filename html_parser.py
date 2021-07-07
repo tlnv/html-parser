@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import requests
-from urllib.parse import urlsplit
 import browser_imitation
 
 
@@ -15,15 +14,9 @@ def get_html(url, params=None):
     return response
 
 
-def fetch_exchange_course(url):
-    path = urlsplit(url).path
-    exchange_course = path.replace(".html", "").replace("/", "")
-    return exchange_course
-
-
 def has_param(param):
     if param:
-        return param.text
+        return True
 
 
 def get_content(html_page):
@@ -39,12 +32,8 @@ def get_content(html_page):
             exchanger_params = rate_findings.find("td", class_="bj")
             if not exchanger_params:
                 continue
-            exchange_values = rate_findings.find_all("td", class_="bi")
             exchanger_name = exchanger_params.find("div", class_="ca").text
             rates_required_data[exchanger_name] = {
-                "pay": exchange_values[0].find("div", class_="fs").text,
-                "get": exchange_values[1].text,
-                "reserve": rate_findings.find("td", class_="ar arp").text,
                 "manual": has_param(exchanger_params.find(class_="manual")),
                 "otherout": has_param(exchanger_params.find(class_="otherout")),
                 "otherin": has_param(exchanger_params.find(class_="otherin")),
@@ -65,7 +54,8 @@ def get_content(html_page):
         pass
 
 
-def parse(url):
+def parse(exchange_adress):
+    exchange_course, url = exchange_adress
     html_page = get_html(url)
     if html_page.status_code == 503:
         while html_page.status_code == 503:
@@ -73,9 +63,7 @@ def parse(url):
             html_page = get_html(url)
         browser_imitation.close()
         rates_required_data = get_content(html_page.text)
-        exchange_course = fetch_exchange_course(url)
         return exchange_course, rates_required_data
     else:
         rates_required_data = get_content(html_page.text)
-        exchange_course = fetch_exchange_course(url)
         return exchange_course, rates_required_data
