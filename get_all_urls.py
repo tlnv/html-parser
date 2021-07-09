@@ -1,10 +1,16 @@
 from bs4 import BeautifulSoup
 from html_parser import get_html
+import browser_imitation
 
 
 def get_all_exchange_adresses():
     url = "https://www.bestchange.ru/bitcoin-to-bitcoin.html"
     html_page = get_html(url)
+    if html_page.status_code == 503:
+        while html_page.status_code == 503:
+            browser_imitation.browse(url)
+            html_page = get_html(url)
+        browser_imitation.close()
     soup = BeautifulSoup(html_page.text, "html.parser")
     curr_tab = soup.find("div", {"id": "curr_tab"})
     curr_tab_body = curr_tab.find("tbody")
