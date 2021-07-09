@@ -11,12 +11,8 @@ pip install -r requirements.txt
 ```
 $ python main.py 
 ```
-Скрипт будет ждать от вас ссылку формата:
-```
-https://www.bestchange.ru/bitcoin-to-sberbank.html
-```
-Программа выводит данные из redis в терминал.
-Для того чтобы обратиться к redis по ключу, запустите `redis-cli`, затем введите `GET валюту_отдаю-to-валюту_получаю`. Ключ нужно забирать из ссылок, для этого можно воспользоваться `html_parser.fetch_exchange_course`, либо скопировать вручную:
+Программа выводит информацию по загрузке данных в redis в терминал.
+Для того чтобы обратиться к redis по ключу, запустите `redis-cli`, затем введите `GET валюту_отдаю-to-валюту_получаю`. Ключ нужно забирать из ссылок.
 ```
 https://www.bestchange.ru/bitcoin-to-sberbank.html --> bitcoin-to-sberbank
 ```
