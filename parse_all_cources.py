@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import browser_imitation
+from connect_redis import redis_set_string
 
 
 HEADERS = {
@@ -67,3 +68,10 @@ def parse(exchange_adress):
     else:
         rates_required_data = get_content(html_page.text)
         return exchange_course, rates_required_data
+
+
+def parse_all_courses(exchange_adresses):
+    for exchange_adress in exchange_adresses.items():
+        exchange_course, rates_required_data = parse(exchange_adress)
+        redis_set_string(exchange_course, rates_required_data)
+        print(f'{exchange_course} course is done. ')

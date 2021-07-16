@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from html_parser import get_html
+from parse_all_cources import get_html
 import browser_imitation
 
 
@@ -23,8 +23,12 @@ def get_all_exchange_adresses():
         сurrency = url.replace("https://www.bestchange.ru/bitcoin-to-", "").replace(".html", "")
         currencies.append(сurrency)
     all_exchange_adresses = {}
+    cash_currencies = ["dollar-cash", "ruble-cash", "euro-cash", "hryvnia-cash", "belarus-cash", "tenge-cash", "pound-cash"]
+    cash_adresses = {}
     for сurrency_to_pay in currencies:
         for currency_to_get in currencies:
             exchange_course = f"{сurrency_to_pay}-to-{currency_to_get}"
             all_exchange_adresses[exchange_course] = f"https://www.bestchange.ru/{exchange_course}.html"
-    return all_exchange_adresses
+            if currency_to_get in cash_currencies or сurrency_to_pay in cash_currencies:
+                cash_adresses[exchange_course] = f"https://www.bestchange.ru/{exchange_course}.html"
+    return all_exchange_adresses, cash_adresses
