@@ -11,8 +11,13 @@ pip install -r requirements.txt
 ```
 $ python main.py 
 ```
-Программа выводит информацию по загрузке данных в redis в терминал.
-Для того чтобы обратиться к redis по ключу, запустите `redis-cli`, затем введите `GET валюту_отдаю-to-валюту_получаю`. Ключ нужно забирать из ссылок.
+После запуска скрипт пишет данные по обмену кэша в разных городах, выводит в терминал `валюту-отдаю-to-валютe-получаю in код-города is done` после успешной записи. Периодически программа будет оттормаживаться и запускать Chrome, чтобы обойти блокировку парсинга. 
+Запись в базу идет в виде хеш-таблиц, следующего вида:
 ```
-https://www.bestchange.ru/bitcoin-to-sberbank.html --> bitcoin-to-sberbank
+{exchange_course: {city_code: { exchanger_name: {pay: pay_value, get: get_value, reserve: reserve_value}}}}
 ```
+Например:
+```
+{bitcoin-to-dollar-cash: {beij: { BestObmen {pay: 1 BTC, get: 12 USD, reserve: 900}}}
+```
+Так как в redis вложенные хеш-таблицы недоступны, напрямую вытащить можно либо все обменники во всех городах по направлению: `HGETALL bitcoin-to-dollar-cash`, либо все обменники в одном городе: `HGET bitcoin-to-dollar-cash beij`.
